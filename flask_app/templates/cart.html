@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://kit.fontawesome.com/ffd2134fa2.js" crossorigin="anonymous"></script>
+
+    <title>Shoppy</title>
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container">
+        <a href="/"><h1 class="navbar-brand">Shoppy</h1></a>
+        <div class="row">
+            <form class="searchbar" action="/search/custom" method="POST" role="search">
+                <div class="input-group">
+                    <input class="form-control" placeholder="Search for anything..." name="srch-term" id="ed-srch-term"
+                        type="text">
+                    <div class="input-group-btn">
+                        <button type="submit" id="searchbtn"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="d-flex">
+            {%if not 'id' in session%}
+            <a href="/login" class="btn btn-outline-secondary" id="login" type="button">Login</a>
+            {%else%}
+            <a href="/dashboard" class="btn btn-outline-secondary" id="myaccount" type="button">My Account</a>
+            {%endif%}
+            <div class="input-group-btn d-flex">
+                <a href="/cart" type="submit" class="btn" style="color: white;" id="cart"><i class="fas fa-shopping-cart"></i> {{session['cart']}}</a>
+            </div>
+        </div>
+        </div>
+    </nav>
+    <main>
+        <div class="container">
+            {%if not 'cart' in session%}
+            <div class="text-center">
+                <h1>Your cart is empty. </h1>
+                <a style = "text-decoration: underline;" href="/search/category/random">Discover Something to Fill it Up</a>
+            </div>
+            {%elif session['cart'] == 0%}
+            <div class="text-center">
+                <h1>Your cart is empty. </h1>
+                <a style = "text-decoration: underline;" href="/search/category/random">Discover Something to Fill it Up</a>
+            </div>
+            {%else%}
+            <h4 style="font-family: Georgia, 'Times New Roman', Times, serif; margin-top: 1em; border-bottom: 2px rgba(128, 128, 128, 0.658) solid;">You have {{session['cart']}} items in your cart</h4>
+            <div class="d-flex itemlist">
+                <div class="w-50">
+                {%for item in items%}
+                    <div class="d-flex">
+                        <img style="width: 150px; height: 150px" src="{{item.photo}}" alt="{{item.item_name}}">
+                        <div class="card w-100" style="border: none;">
+                            <div class="card-body" style="padding-top: 0;">
+                                <a href="/listing/{{item.id}}"><h4 class="card-title" style="padding-top: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{item.item_name}}</h4>
+                                <h6 class="card-subtitle mb-2 text-muted" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${{item.price}}</h6></a>
+                                
+                                <a href="#!" class="card-link">Save for later</a>
+                                <a href="/cart/remove/{{item.id}}" class="card-link">Remove from cart</a>
+                                <a href="/vendor/{{item.vendor_id}}" class="card-link">Vendor Page</a>
+                                
+                            </div>
+                        </div>
+                    </div><br>
+                {%endfor%}
+                </div>
+            <form class="box" style="border: none;" action="/cart/checkout" method="POST">
+                {%for item in items%}
+                <input type="hidden" name="subtotal" value="{{subtotal}}">
+                {%endfor%}
+                <div class="d-flex justify-content-between">
+                    <h5>item(s) total:</h5>
+                    <h5>${{subtotal}}</h5>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <h5 class="text-muted">shipping: </h5>
+                    <h5 style="color: green">FREE</h5>
+                </div>
+                <h6>Enter shipping address: </h6>
+                <label for="address_1">Address line 1:</label>
+                <input class="form-control login" type="text" name = "address_1" required>
+                <label for="address_2">(optional) Address line 2:</label>
+                <input class="form-control login" type="text" name = "address_2">
+                <label for="city">City: </label>
+                <input class="form-control login" type="text" name="city" required>
+                <label for="state">State: </label>
+                <input class="form-control login" type="text" name = "state" required>
+                <label for="zip_code">Zip Code: </label>
+                <input class="form-control login" type="text" name = "zip_code" required><br>
+
+                <button class="btn btn-primary" type="submit">Checkout</button>
+            </form>
+            </div>
+            {%endif%}
+        </div>
+    </main>
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?version=3.52.1&features=fetch"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+</body>
+</html>

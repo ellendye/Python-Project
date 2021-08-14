@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://kit.fontawesome.com/ffd2134fa2.js" crossorigin="anonymous"></script>
+    
+    <title>Shoppy - The go-to shop for unique gifts</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container">
+        <a href="/"><h1 class="navbar-brand">Shoppy</h1></a>
+        <div class="row">
+            <form class="searchbar" action="/search/custom" method="POST" role="search">
+                <div class="input-group">
+                    <input class="form-control" placeholder="Search for anything..." name="srch-term" id="ed-srch-term"
+                        type="text">
+                    <div class="input-group-btn">
+                        <button type="submit" id="searchbtn"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="d-flex">
+            {%if not 'id' in session%}
+            <a href="/login" class="btn btn-outline-secondary" id="login" type="button">Login</a>
+            {%else%}
+            <a href="/dashboard" class="btn btn-outline-secondary" id="myaccount" type="button">My Account</a>
+            {%endif%}
+            <div class="input-group-btn d-flex">
+                <a href="/cart" type="submit" class="btn" style="color: white;" id="cart"><i class="fas fa-shopping-cart"></i> {{session['cart']}}</a>
+            </div>
+        </div>
+        </div>
+    </nav>
+    <main>
+        <div class="container categories flex-column text-center">
+            <h2>Shop unique gifts for every occasion</h2>
+            <h5>Browse by category</h5>
+            <div class="d-flex justify-content-between align-center flex-wrap category">
+                <a href="/search/category/Jewelry">
+                    <img src="{{ url_for('static', filename='images/pexels-photo-4974342.jpeg') }}" alt="Jewelry" class="categoryimg">
+                    <h6>Jewelry →︁</h6>
+                </a>
+                <a href="/search/category/Furniture">
+                    <img src="{{ url_for('static', filename='images/pexels-photo-4505458.jpeg') }}" alt="Furniture" class="categoryimg">
+                    <h6>Furniture →︁</h6>
+                </a>
+                <a href="/search/category/Antiques">
+                    <img src="{{ url_for('static', filename='images/pexels-photo-242433.jpeg') }}" alt="Antiques" class="categoryimg">
+                    <h6>Antiques →︁</h6>
+                </a>
+                <a href="/search/category/Games">
+                    <img src="{{ url_for('static', filename='images/pexels-photo-278918.jpeg') }}" alt="Games" class="categoryimg">
+                    <h6>Games →︁</h6>
+                </a>
+                <a href="/search/category/Handcrafted Goods">
+                    <img src="{{ url_for('static', filename='images/pexels-photo-7292893.jpeg') }}" alt="Handcrafted Goods" class="categoryimg">
+                    <h6>Handcrafted Goods →︁</h6>
+                </a>
+            </div>
+            <div class="d-flex justify-content-around align-center flex-wrap category">
+                <a href="/search/category/Clothing">
+                    <img src="{{ url_for('static', filename='images/pexels-photo-996329.jpeg') }}" alt="Handcrafted Goods" class="categoryimg">
+                    <h6>Clothing →︁</h6>
+                </a>
+                <a href="/search/category/Home Decor">
+                    <img src="{{ url_for('static', filename='images/pexels-photo-1528975.jpeg') }}" alt="Home Decor" class="categoryimg">
+                    <h6>Home Decor →︁</h6>
+                </a>
+                <a href="/search/category/Outdoor">
+                    <img src="{{ url_for('static', filename='images/pexels-photo-4505165.jpeg') }}" alt="Outdoor" class="categoryimg">
+                    <h6>Outdoor →︁</h6>
+                </a>
+                <a href="/search/category/Party Supplies">
+                    <img src="{{ url_for('static', filename='images/pexels-photo-7180612.jpeg') }}" alt="Party Supplies" class="categoryimg">
+                    <h6>Party Supplies →︁</h6>
+                </a>
+            </div>
+        </div>
+        <div class="vendorinfo">
+            <div class="container">
+                <h2>Support small business with Shoppy</h2>
+                <h4>Shoppy is your online artisian makers market where you can find the best handmade goods</h4>
+                <h5>Check out some of our unique vendors below! </h5><br>
+                <div>
+                    <div class="vendorspotlight d-flex justify-content-between">
+                        {%for result in random_vendors%}
+                        <a href="/vendor/{{result.id}}" class="vendor">
+                            <img src="{{result.logo}}" alt="" class="vendorphoto">
+                            <div class="overlay">
+                                <div class="text">{{result.vendor_name}}</div>
+                            </div>
+                        </a>
+                        {%endfor%}
+                    </div>
+                </div><br>
+                <a id="becomeavendor" href="/login">Become a vendor today</a><br><br>
+            </div>
+        </div>
+    </main>
+    <footer>
+
+    </footer>
+</body>
+
+</html>

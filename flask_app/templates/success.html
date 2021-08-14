@@ -1,0 +1,64 @@
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://kit.fontawesome.com/ffd2134fa2.js" crossorigin="anonymous"></script>
+    <title>Thanks for your order! | Shoppy</title>
+</head>
+<body>
+    <!-- NAV BAR -->
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container">
+        <a href="/"><h1 class="navbar-brand">Shoppy</h1></a>
+        <div class="row">
+            <form class="searchbar" action="/search/custom" method="POST" role="search">
+                <div class="input-group">
+                    <input class="form-control" placeholder="Search for anything..." name="srch-term" id="ed-srch-term"
+                        type="text">
+                    <div class="input-group-btn">
+                        <button type="submit" id="searchbtn"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="d-flex">
+            {%if not 'id' in session%}
+            <a href="/login" class="btn btn-outline-secondary" id="login" type="button">Login</a>
+            {%else%}
+            <a href="/dashboard" class="btn btn-outline-secondary" id="myaccount" type="button">My Account</a>
+            {%endif%}
+            <div class="input-group-btn d-flex">
+                <a href="/cart" type="submit" class="btn" style="color: white;" id="cart"><i class="fas fa-shopping-cart"></i> {{session['cart']}}</a>
+            </div>
+        </div>
+        </div>
+    </nav>
+    <!-- MAIN BODY OF PAGE -->
+    <main>
+        <div class="container">
+            <br><h3 class="text-center">We appreciate your business!</h3><br>
+            <div class="box">
+                <h4>Order details</h4>
+                <h6>Order #: {{order_num}}</h6>
+                <h6>Order total: ${{total}}</h6>
+                <h6>Number of items in order: {{number_of_items}}</h6>
+                <p>Shipping Address: {{shipping_address}}</p>
+                <h6>Items in order:</h6>
+                <ol>
+                {%for item in items%}
+                <li>
+                {{item.item_name}} - ${{item.price}} - seller: {{item.vendor_name}}
+                </li>
+                {%endfor%}
+                </ol>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

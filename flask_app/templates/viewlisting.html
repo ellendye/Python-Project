@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://kit.fontawesome.com/ffd2134fa2.js" crossorigin="anonymous"></script>
+    <title>{{item.item_name}}</title>
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container">
+        <a href="/"><h1 class="navbar-brand">Shoppy</h1></a>
+        <div class="row">
+            <form class="searchbar" action="/search/custom" method="POST" role="search">
+                <div class="input-group">
+                    <input class="form-control" placeholder="Search for anything..." name="srch-term" id="ed-srch-term"
+                        type="text">
+                    <div class="input-group-btn">
+                        <button type="submit" id="searchbtn"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="d-flex">
+            {%if not 'id' in session%}
+            <a href="/login" class="btn btn-outline-secondary" id="login" type="button">Login</a>
+            {%else%}
+            <a href="/dashboard" class="btn btn-outline-secondary" id="myaccount" type="button">My Account</a>
+            {%endif%}
+            <div class="input-group-btn d-flex">
+                <a href="/cart" type="submit" class="btn" style="color: white;" id="cart"><i class="fas fa-shopping-cart"></i> {{session['cart']}}</a>
+            </div>
+        </div>
+        </div>
+    </nav>
+    <main>
+        <div class="container">
+            <div class="viewlisting d-flex">
+                <div class="w-50">
+                    <img src="{{item.photo}}" alt="{{item.item_name}}">
+                    <h1 style="font-family: Georgia, 'Times New Roman', Times, serif;">${{item.price}}</h1>
+                    {%if item.stock >= 15%}
+                    <h6 style="color: green;">In stock</h6><br>
+                    {%elif item.stock >= 1%}
+                    <h6 style="color: rgb(194, 158, 1)">Low stock - order soon!</h6>
+                    {%else%}
+                    <h6 style="color: red">Out of stock</h6>
+                    {%endif%}
+                    <h6>free shipping - ships from: {{item.zip_code}}</h6>
+                    <a href="/listing/{{item.id}}/add" class="btn btn-outline-dark">Add to cart</a>
+                </div>
+                <div class="w-50">
+                    <a style="text-decoration: underline;" href="/vendor/{{item.vendor_id}}">{{item.vendor_name}}</a>
+
+                    <h2 style="font-family: Georgia, 'Times New Roman', Times, serif;">{{item.item_name}}</h2>
+
+
+                    <pre>{{item.description}}</pre>
+                </div>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>

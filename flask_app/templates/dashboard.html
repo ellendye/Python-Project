@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://kit.fontawesome.com/ffd2134fa2.js" crossorigin="anonymous"></script>
+
+    <title>Shoppy</title>
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container">
+        <a href="/"><h1 class="navbar-brand">Shoppy</h1></a>
+        <div class="row">
+            <form class="searchbar" action="/search/custom" method="POST" role="search">
+                <div class="input-group">
+                    <input class="form-control" placeholder="Search for anything..." name="srch-term" id="ed-srch-term"
+                        type="text">
+                    <div class="input-group-btn">
+                        <button type="submit" id="searchbtn"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="d-flex">
+            {%if not 'id' in session%}
+            <a href="/login" class="btn btn-outline-secondary" id="login" type="button">Login</a>
+            {%else%}
+            <a href="/dashboard" class="btn btn-outline-secondary" id="myaccount" type="button">My Account</a>
+            {%endif%}
+            <div class="input-group-btn d-flex">
+                <a href="/cart" type="submit" class="btn" style="color: white;" id="cart"><i class="fas fa-shopping-cart"></i> {{session['cart']}}</a>
+            </div>
+        </div>
+        </div>
+    </nav>
+    <main>
+        <div class="container">
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <div class="alert alert-danger">
+                <a class="close" href="">Click here to close message</a>
+                <ul>
+                    {% for message in messages %}
+                    <li>{{message}}</li> 
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+            {% endwith %}
+            <div class="d-flex justify-content-around align-items-center loginsubmit">
+                {%if user.profile_picture == None%}
+                <img src="{{ url_for('static', filename='images/profile.jpg') }}" alt="Profile Picture" class="categoryimg">
+                {%else%}
+                <img src="{{user.profile_picture}}" alt="{{user.first_name}}" class="categoryimg">
+                {%endif%}
+                <h2>Welcome to your user dashboard, {{session['first_name']}}</h2>
+                <div class="d-flex flex-column profilebuttons align-self-center">
+                    <button class="open-button btn btn-outline-dark" onclick="openForm()">Edit Profile</button>
+                    {%if not 'vendor' in session%}
+                    <a href="/vendor" class="btn btn-outline-dark">Become a vendor</a>
+                    {%else%}
+                    <a href="/vendor/dashboard" class="btn btn-outline-dark">Vendor Dashboard</a>
+                    {%endif%}
+                </div>
+            </div><br>
+            {%if user.about_me != None%}
+            <h5>About me</h5>
+            <p>{{user.about_me}}</p>
+            {%endif%}
+            <div class="form-popup" id="myForm">
+                <form action="/dashboard/editprofile" class="form-container2" method="POST" enctype="multipart/form-data">
+                    <label for="first_name"><b>First Name:</b></label>
+                    <input type="text" value="{{user.first_name}}" name="first_name">
+                    <label for="last_name"><b>Last Name:</b></label>
+                    <input type="text" value="{{user.last_name}}" name="last_name">
+                    <label for="email"><b>Email:</b></label>
+                    <input type="email" value="{{user.email}}" name="email"><br>
+                    <label for="about_me"><b>About me: </b></label>
+                    <textarea type="text" name="about_me" cols="30" rows="5">{{user.about_me}}</textarea>
+                    <label for="birthday"><b>My Birthday: </b></label>
+                    <input type="date" value="{{user.birthday}}" name="birthday"><br><br>
+                    <label for="profile_picture"><b>Upload Profile Picture: </b></label>
+                    <input type="file" name="profile_picture"><br>
+                    <button type="submit" class="btn">Submit</button>
+                    <button type="button" class="btn cancel" onclick="closeForm()">Cancel</button>
+                </form>
+            </div>
+            
+            <div class="d-flex registration">
+                <div class="box border">
+                    <h5>My orders</h5>
+                    <ul>
+                    {%for order in orders%}
+                    <li style="text-decoration: underline;"><a href="/order/view/{{order.id}}">Order Number: {{order.id}} {{order.created_at}} ${{order.total}}</a></li>
+                    {%endfor%}
+                    </ul>
+                </div>
+                <!-- <div class="box"><h5>Recent Searches - not yet functional</h5></div> -->
+            </div>
+
+            <a href="/logout" class="btn btn-outline-dark loginsubmit">Logout</a>
+        </div>
+    </main>
+
+
+    <script>
+        function openForm() {
+            document.getElementById("myForm").style.display = "block";
+        }
+        
+        function closeForm() {
+            document.getElementById("myForm").style.display = "none";
+        }
+    </script>
+</body>
+</html>
